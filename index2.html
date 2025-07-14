@@ -19,6 +19,12 @@
     h1 {
       font-size: 2.5rem;
       margin-top: 2rem;
+      text-align: center;
+    }
+    #yearTitle {
+      font-size: 2.5rem;
+      display: inline;
+      white-space: nowrap;
     }
     #nowTime {
       font-size: 1rem;
@@ -77,7 +83,7 @@
   </style>
 </head>
 <body>
-  <h1 id="title">Đếm ngược đến Tết</h1>
+  <h1 id="title">Đếm ngược đến Tết <span id="yearTitle">2026</span></h1>
   <div id="nowTime"></div>
   <label for="yearSelector">Chọn năm:</label>
   <select id="yearSelector"></select>
@@ -94,21 +100,24 @@
     <div class="countdown-time" id="tetTime"></div>
   </div>
   <footer>
-   
+    Website được tạo vào 01/01/2025 và sẽ dừng hoạt động vào 01/01/3000<br>
     Lưu ý: Từ năm 2031 trở đi, mọi thông tin về tết nguyên đán trên website hiển thị đều không chính xác và sẽ được cập nhật sau.<br>
     © 2025 - Build by Zn
   </footer>
+
   <script>
     const nowTimeEl = document.getElementById("nowTime");
     const yearSelectorEl = document.getElementById("yearSelector");
     const titleEl = document.getElementById("title");
+
     const duongTargetEl = document.getElementById("duongTarget");
     const nguyendanTargetEl = document.getElementById("nguyendanTarget");
-
     const duongDays = document.getElementById("duongDays");
     const duongTime = document.getElementById("duongTime");
     const tetDays = document.getElementById("tetDays");
     const tetTime = document.getElementById("tetTime");
+
+    const yearTitleSpan = document.getElementById("yearTitle");
 
     const tetInfo = {
       2026: { date: "2026-02-17T00:00:00" },
@@ -126,7 +135,6 @@
     updateNowTime();
 
     function updateCountdown(targetDate, daysEl, timeEl) {
-      let lastDayValue = null;
       function run() {
         const now = new Date();
         const diff = targetDate - now;
@@ -140,14 +148,8 @@
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
 
-        if (days !== lastDayValue) {
-          daysEl.textContent = days;
-          lastDayValue = days;
-        }
-
-        timeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes
-          .toString()
-          .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        daysEl.textContent = days;
+        timeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       }
       run();
       return setInterval(run, 1000);
@@ -169,7 +171,7 @@
         tetTime.textContent = '--:--:--';
       }
 
-      titleEl.textContent = `Đếm ngược đến Tết ${year}`;
+      yearTitleSpan.textContent = year;
     }
 
     for (let y = 2026; y <= 3000; y++) {
