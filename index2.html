@@ -21,11 +21,6 @@
       margin-top: 2rem;
       text-align: center;
     }
-    #yearTitle {
-      font-size: 2.5rem;
-      display: inline;
-      white-space: nowrap;
-    }
     #nowTime {
       font-size: 1rem;
       font-style: italic;
@@ -80,6 +75,11 @@
       color: #fff5f5;
       font-style: italic;
     }
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 2rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -100,24 +100,20 @@
     <div class="countdown-time" id="tetTime"></div>
   </div>
   <footer>
-    
+    Website được tạo vào 01/01/2025 và sẽ dừng hoạt động vào 01/01/3000<br>
     Lưu ý: Từ năm 2031 trở đi, mọi thông tin về tết nguyên đán trên website hiển thị đều không chính xác và sẽ được cập nhật sau.<br>
     © 2025 - Build by Zn
   </footer>
-
   <script>
     const nowTimeEl = document.getElementById("nowTime");
     const yearSelectorEl = document.getElementById("yearSelector");
-    const titleEl = document.getElementById("title");
-
+    const yearTitleSpan = document.getElementById("yearTitle");
     const duongTargetEl = document.getElementById("duongTarget");
     const nguyendanTargetEl = document.getElementById("nguyendanTarget");
     const duongDays = document.getElementById("duongDays");
     const duongTime = document.getElementById("duongTime");
     const tetDays = document.getElementById("tetDays");
     const tetTime = document.getElementById("tetTime");
-
-    const yearTitleSpan = document.getElementById("yearTitle");
 
     const tetInfo = {
       2026: { date: "2026-02-17T00:00:00" },
@@ -134,7 +130,12 @@
     setInterval(updateNowTime, 1000);
     updateNowTime();
 
-    function updateCountdown(targetDate, daysEl, timeEl) {
+    let duongInterval = null;
+    let tetInterval = null;
+
+    function updateCountdown(targetDate, daysEl, timeEl, oldInterval) {
+      if (oldInterval) clearInterval(oldInterval);
+
       function run() {
         const now = new Date();
         const diff = targetDate - now;
@@ -151,6 +152,7 @@
         daysEl.textContent = days;
         timeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       }
+
       run();
       return setInterval(run, 1000);
     }
@@ -158,17 +160,18 @@
     function setYear(year) {
       const duongDate = new Date(`${year}-01-01T00:00:00`);
       duongTargetEl.textContent = `Tết Dương Lịch ${year} rơi vào ngày ${duongDate.toLocaleDateString('vi-VN')}`;
-      updateCountdown(duongDate, duongDays, duongTime);
+      duongInterval = updateCountdown(duongDate, duongDays, duongTime, duongInterval);
 
       const tet = tetInfo[year];
       if (tet) {
         const tetDate = new Date(tet.date);
         nguyendanTargetEl.textContent = `Tết Nguyên Đán ${year} rơi vào ngày ${tetDate.toLocaleDateString('vi-VN')}`;
-        updateCountdown(tetDate, tetDays, tetTime);
+        tetInterval = updateCountdown(tetDate, tetDays, tetTime, tetInterval);
       } else {
         nguyendanTargetEl.textContent = `Không có dữ liệu Tết Nguyên Đán cho năm ${year}`;
         tetDays.textContent = '--';
         tetTime.textContent = '--:--:--';
+        if (tetInterval) clearInterval(tetInterval);
       }
 
       yearTitleSpan.textContent = year;
@@ -191,3 +194,4 @@
   </script>
 </body>
 </html>
+
